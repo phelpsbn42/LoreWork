@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lorework.local/schemas/project-meta.schema.json",
+  "title": "Project Metadata",
+  "description": "Schema for LoreWork project metadata",
+  "type": "object",
+  "required": ["project_name", "created_date"],
+  "properties": {
+    "project_name": {
+      "type": "string",
+      "description": "Unique identifier for the project",
+      "minLength": 1,
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Human-readable project name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief project description"
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date project was created"
+    },
+    "last_modified": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last modification timestamp"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["inception", "specification", "development", "completed", "on-hold", "cancelled"],
+      "description": "Current project phase"
+    },
+    "team": {
+      "type": "array",
+      "description": "Team members associated with the project",
+      "items": {
+        "type": "object",
+        "required": ["name", "role"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "description": "Project tags for categorization",
+      "items": {
+        "type": "string"
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "description": "Tracking which artifacts have been created",
+      "properties": {
+        "inception_deck": {
+          "type": "object",
+          "properties": {
+            "completed": {
+              "type": "boolean"
+            },
+            "last_updated": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "specification": {
+          "type": "object",
+          "properties": {
+            "use_cases_completed": {
+              "type": "boolean"
+            },
+            "c4_diagrams_completed": {
+              "type": "boolean"
+            },
+            "wireframes_completed": {
+              "type": "boolean"
+            },
+            "adrs_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "last_updated": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "development": {
+          "type": "object",
+          "properties": {
+            "task_breakdown_completed": {
+              "type": "boolean"
+            },
+            "tasks_total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "tasks_completed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "last_updated": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      }
+    },
+    "contradictions": {
+      "type": "array",
+      "description": "Log of detected contradictions",
+      "items": {
+        "type": "object",
+        "required": ["detected_by", "date", "description"],
+        "properties": {
+          "detected_by": {
+            "type": "string",
+            "enum": ["analyst", "solution-architect", "paired-developer"]
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "upstream_artifact": {
+            "type": "string"
+          },
+          "downstream_artifact": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "resolution": {
+            "type": "string"
+          },
+          "resolved": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Free-form project notes"
+    }
+  }
+}

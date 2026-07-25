@@ -1,0 +1,34 @@
+{
+  "name": "lorework",
+  "version": "1.0.0",
+  "description": "AI-agnostic persona system for solution delivery",
+  "main": "scripts/render.js",
+  "bin": {
+    "lw-render": "./scripts/render.js",
+    "lw-init": "./scripts/init-project.js",
+    "lw-validate": "./scripts/validate.js"
+  },
+  "scripts": {
+    "render": "node scripts/render.js",
+    "init": "node scripts/init-project.js",
+    "validate": "node scripts/validate.js",
+    "test": "node scripts/test-render.js"
+  },
+  "keywords": [
+    "ai",
+    "personas",
+    "agile",
+    "inception-deck",
+    "templates",
+    "handlebars"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "handlebars": "^4.7.8",
+    "ajv": "^8.12.0",
+    "ajv-formats": "^2.1.1",
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0"
+  }
+}

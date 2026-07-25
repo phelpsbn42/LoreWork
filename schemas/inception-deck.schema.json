@@ -1,0 +1,835 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lorework.local/schemas/inception-deck.schema.json",
+  "title": "Inception Deck",
+  "description": "Schema for Agile Inception Deck data",
+  "type": "object",
+  "required": ["project_name", "generated_date"],
+  "properties": {
+    "project_name": {
+      "type": "string",
+      "description": "Name of the project"
+    },
+    "generated_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the deck was generated"
+    },
+    "section_1_why_are_we_here": {
+      "type": "object",
+      "description": "Section 1: Why Are We Here?",
+      "properties": {
+        "problem_statement": {
+          "type": "string"
+        },
+        "affected_parties": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "current_state": {
+          "type": "string"
+        },
+        "consequences": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "success_vision": {
+          "type": "string"
+        },
+        "success_criteria": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "key_drivers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "driver": { "type": "string" },
+              "rationale": { "type": "string" }
+            }
+          }
+        },
+        "open_questions": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "section_2_elevator_pitch": {
+      "type": "object",
+      "description": "Section 2: Elevator Pitch",
+      "properties": {
+        "target_customer": { "type": "string" },
+        "target_customer_detail": { "type": "string" },
+        "customer_need": { "type": "string" },
+        "customer_need_detail": { "type": "string" },
+        "product_name": { "type": "string" },
+        "product_category": { "type": "string" },
+        "key_benefit": { "type": "string" },
+        "key_benefit_detail": { "type": "string" },
+        "competitors": { "type": "string" },
+        "competitors_list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "weakness": { "type": "string" }
+            }
+          }
+        },
+        "differentiator": { "type": "string" },
+        "differentiator_detail": { "type": "string" },
+        "taglines": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "urgency": { "type": "string" },
+        "open_questions": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "section_3_product_box": {
+      "type": "object",
+      "description": "Section 3: Product Box",
+      "properties": {
+        "product_name": { "type": "string" },
+        "tagline": { "type": "string" },
+        "hero_image_description": { "type": "string" },
+        "top_features": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "headline": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "product_description": { "type": "string" },
+        "key_benefits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "icon": { "type": "string" },
+              "benefit": { "type": "string" },
+              "detail": { "type": "string" }
+            }
+          }
+        },
+        "technical_highlights": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "requirements": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "version": { "type": "string" },
+        "platform": { "type": "string" },
+        "license": { "type": "string" },
+        "support": { "type": "string" },
+        "testimonial_quote": { "type": "string" },
+        "testimonial_author": { "type": "string" },
+        "testimonial_role": { "type": "string" },
+        "call_to_action": { "type": "string" },
+        "open_questions": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "section_4_not_list": {
+      "type": "object",
+      "description": "Section 4: NOT List",
+      "properties": {
+        "not_doing": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "item": { "type": "string" },
+              "rationale": { "type": "string" },
+              "misconception": { "type": "string" }
+            }
+          }
+        },
+        "not_now": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "item": { "type": "string" },
+              "rationale": { "type": "string" },
+              "timeline": { "type": "string" },
+              "dependencies": { "type": "string" }
+            }
+          }
+        },
+        "in_scope": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "excluded_users": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "excluded_platforms": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "excluded_integrations": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "excluded_features": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "decisions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "item": { "type": "string" },
+              "decision": { "type": "string" },
+              "date": { "type": "string" },
+              "decided_by": { "type": "string" }
+            }
+          }
+        },
+        "escalation_contact": { "type": "string" },
+        "open_questions": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "section_5_meet_neighbors": {
+      "type": "object",
+      "description": "Section 5: Meet the Neighbors",
+      "properties": {
+        "core_team": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "role": { "type": "string" },
+              "responsibilities": { "type": "string" },
+              "availability": { "type": "string" },
+              "contact": { "type": "string" }
+            }
+          }
+        },
+        "key_stakeholders": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "title": { "type": "string" },
+              "interest": { "type": "string" },
+              "influence": { "type": "string" },
+              "engagement": { "type": "string" },
+              "concerns": { "type": "string" },
+              "comm_preference": { "type": "string" }
+            }
+          }
+        },
+        "stakeholder_matrix": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "interest": { "type": "string" },
+              "influence": { "type": "string" },
+              "strategy": { "type": "string" }
+            }
+          }
+        },
+        "dependent_teams": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "team_name": { "type": "string" },
+              "dependency": { "type": "string" },
+              "contact": { "type": "string" },
+              "risk": { "type": "string" }
+            }
+          }
+        },
+        "consuming_teams": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "team_name": { "type": "string" },
+              "dependency": { "type": "string" },
+              "contact": { "type": "string" },
+              "timeline": { "type": "string" }
+            }
+          }
+        },
+        "external_systems": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "system_name": { "type": "string" },
+              "integration_type": { "type": "string" },
+              "owner": { "type": "string" },
+              "sla": { "type": "string" },
+              "docs_link": { "type": "string" }
+            }
+          }
+        },
+        "communication_plan": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "audience": { "type": "string" },
+              "frequency": { "type": "string" },
+              "channel": { "type": "string" },
+              "content": { "type": "string" },
+              "owner": { "type": "string" }
+            }
+          }
+        },
+        "raci": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "area": { "type": "string" },
+              "responsible": { "type": "string" },
+              "accountable": { "type": "string" },
+              "consulted": { "type": "string" },
+              "informed": { "type": "string" }
+            }
+          }
+        },
+        "potential_blockers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "blocker": { "type": "string" },
+              "mitigation": { "type": "string" }
+            }
+          }
+        },
+        "open_questions": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "section_6_show_solution": {
+      "type": "object",
+      "description": "Section 6: Show the Solution",
+      "properties": {
+        "solution_overview": { "type": "string" },
+        "solution_diagram": { "type": "string" },
+        "solution_diagram_description": { "type": "string" },
+        "components": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "purpose": { "type": "string" },
+              "technology": { "type": "string" },
+              "interactions": { "type": "string" }
+            }
+          }
+        },
+        "user_journeys": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "journey_name": { "type": "string" },
+              "actor": { "type": "string" },
+              "steps": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "number": { "type": "integer" },
+                    "description": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "architecture_style": { "type": "string" },
+        "technologies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": { "type": "string" },
+              "choice": { "type": "string" },
+              "rationale": { "type": "string" }
+            }
+          }
+        },
+        "data_flow_description": { "type": "string" },
+        "data_flow_diagram": { "type": "string" },
+        "integrations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "system_name": { "type": "string" },
+              "method": { "type": "string" },
+              "data": { "type": "string" },
+              "frequency": { "type": "string" },
+              "error_handling": { "type": "string" }
+            }
+          }
+        },
+        "security_considerations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "area": { "type": "string" },
+              "approach": { "type": "string" }
+            }
+          }
+        },
+        "scalability_approach": { "type": "string" },
+        "expected_users": { "type": "string" },
+        "expected_transactions": { "type": "string" },
+        "expected_data_volume": { "type": "string" },
+        "deployment_model": { "type": "string" },
+        "environments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "purpose": { "type": "string" }
+            }
+          }
+        },
+        "open_questions": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "section_7_risks": {
+      "type": "object",
+      "description": "Section 7: Risks",
+      "properties": {
+        "risks_summary": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" },
+              "likelihood": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "impact": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "score": { "type": "integer" },
+              "status": { "type": "string" }
+            }
+          }
+        },
+        "risks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" },
+              "category": { "type": "string" },
+              "description": { "type": "string" },
+              "likelihood": { "type": "integer" },
+              "likelihood_rationale": { "type": "string" },
+              "impact": { "type": "integer" },
+              "impact_rationale": { "type": "string" },
+              "score": { "type": "integer" },
+              "risk_level": { "type": "string" },
+              "triggers": { "type": "array", "items": { "type": "string" } },
+              "mitigation": { "type": "string" },
+              "contingency": { "type": "string" },
+              "owner": { "type": "string" },
+              "status": { "type": "string" },
+              "review_date": { "type": "string" }
+            }
+          }
+        },
+        "technical_risks": { "type": "array", "items": { "type": "string" } },
+        "schedule_risks": { "type": "array", "items": { "type": "string" } },
+        "resource_risks": { "type": "array", "items": { "type": "string" } },
+        "external_risks": { "type": "array", "items": { "type": "string" } },
+        "business_risks": { "type": "array", "items": { "type": "string" } },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "assumption": { "type": "string" },
+              "consequence": { "type": "string" }
+            }
+          }
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "dependency": { "type": "string" },
+              "owner": { "type": "string" },
+              "risk": { "type": "string" }
+            }
+          }
+        },
+        "next_review_date": { "type": "string" },
+        "open_questions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "section_8_sizing": {
+      "type": "object",
+      "description": "Section 8: Sizing",
+      "properties": {
+        "overall_size": { "type": "string", "enum": ["S", "M", "L", "XL"] },
+        "estimated_duration": { "type": "string" },
+        "confidence_level": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "s_duration": { "type": "string" },
+        "s_team": { "type": "string" },
+        "m_duration": { "type": "string" },
+        "m_team": { "type": "string" },
+        "l_duration": { "type": "string" },
+        "l_team": { "type": "string" },
+        "xl_duration": { "type": "string" },
+        "xl_team": { "type": "string" },
+        "size_breakdown": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "area": { "type": "string" },
+              "size": { "type": "string" },
+              "rationale": { "type": "string" },
+              "efforts": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "estimation_methodology": { "type": "string" },
+        "methodology_description": { "type": "string" },
+        "estimation_participants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "role": { "type": "string" }
+            }
+          }
+        },
+        "estimation_date": { "type": "string" },
+        "phases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "number": { "type": "integer" },
+              "name": { "type": "string" },
+              "duration": { "type": "string" },
+              "deliverables": { "type": "array", "items": { "type": "string" } },
+              "dependencies": { "type": "string" }
+            }
+          }
+        },
+        "milestones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "target_date": { "type": "string" },
+              "dependencies": { "type": "string" }
+            }
+          }
+        },
+        "effort_distribution": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": { "type": "string" },
+              "percentage": { "type": "number" },
+              "notes": { "type": "string" }
+            }
+          }
+        },
+        "complexity_increase": { "type": "array", "items": { "type": "string" } },
+        "complexity_decrease": { "type": "array", "items": { "type": "string" } },
+        "similar_projects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "duration": { "type": "string" },
+              "team_size": { "type": "string" },
+              "similarity": { "type": "string" },
+              "differences": { "type": "string" }
+            }
+          }
+        },
+        "confidence_factors": { "type": "array", "items": { "type": "string" } },
+        "uncertainty_areas": { "type": "array", "items": { "type": "string" } },
+        "buffer_percentage": { "type": "number" },
+        "buffer_rationale": { "type": "string" },
+        "open_questions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "section_9_tradeoffs": {
+      "type": "object",
+      "description": "Section 9: Tradeoffs",
+      "properties": {
+        "scope_value": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "scope_position": { "type": "string" },
+        "scope_rationale": { "type": "string" },
+        "scope_rank": { "type": "integer" },
+        "timeline_value": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "timeline_position": { "type": "string" },
+        "timeline_rationale": { "type": "string" },
+        "timeline_rank": { "type": "integer" },
+        "budget_value": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "budget_position": { "type": "string" },
+        "budget_rationale": { "type": "string" },
+        "budget_rank": { "type": "integer" },
+        "quality_value": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "quality_position": { "type": "string" },
+        "quality_rationale": { "type": "string" },
+        "quality_rank": { "type": "integer" },
+        "primary_constraint": { "type": "string" },
+        "most_flexible": { "type": "string" },
+        "schedule_pressure_response": { "type": "string" },
+        "budget_pressure_response": { "type": "string" },
+        "scope_pressure_response": { "type": "string" },
+        "quality_pressure_response": { "type": "string" },
+        "code_quality_target": { "type": "string" },
+        "code_quality_minimum": { "type": "string" },
+        "code_quality_measurement": { "type": "string" },
+        "test_coverage_target": { "type": "string" },
+        "test_coverage_minimum": { "type": "string" },
+        "test_types_required": { "type": "string" },
+        "documentation_target": { "type": "string" },
+        "documentation_minimum": { "type": "string" },
+        "documentation_required": { "type": "string" },
+        "performance_target": { "type": "string" },
+        "performance_minimum": { "type": "string" },
+        "performance_metrics": { "type": "string" },
+        "acceptable_compromises": { "type": "array", "items": { "type": "string" } },
+        "unacceptable_compromises": { "type": "array", "items": { "type": "string" } },
+        "tradeoff_decision_maker": { "type": "string" },
+        "tradeoff_stakeholders": { "type": "string" },
+        "open_questions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "section_10_what_it_takes": {
+      "type": "object",
+      "description": "Section 10: What It Takes",
+      "properties": {
+        "team_summary": { "type": "string" },
+        "duration_summary": { "type": "string" },
+        "budget_summary": { "type": "string" },
+        "dependencies_summary": { "type": "string" },
+        "required_roles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "role": { "type": "string" },
+              "count": { "type": "integer" },
+              "level": { "type": "string" },
+              "skills": { "type": "string" },
+              "allocation": { "type": "string" },
+              "duration": { "type": "string" },
+              "status": { "type": "string" }
+            }
+          }
+        },
+        "team_structure_diagram": { "type": "string" },
+        "core_headcount": { "type": "integer" },
+        "extended_headcount": { "type": "integer" },
+        "total_fte": { "type": "number" },
+        "skills_matrix": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "skill": { "type": "string" },
+              "required": { "type": "string" },
+              "available": { "type": "string" },
+              "gap": { "type": "string" }
+            }
+          }
+        },
+        "skill_gaps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "skill": { "type": "string" },
+              "mitigation": { "type": "string" }
+            }
+          }
+        },
+        "dev_tools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "tool": { "type": "string" },
+              "purpose": { "type": "string" },
+              "cost": { "type": "string" }
+            }
+          }
+        },
+        "infrastructure": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "item": { "type": "string" },
+              "purpose": { "type": "string" },
+              "cost": { "type": "string" }
+            }
+          }
+        },
+        "licenses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "count": { "type": "integer" },
+              "cost": { "type": "string" }
+            }
+          }
+        },
+        "budget_breakdown": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": { "type": "string" },
+              "cost": { "type": "string" },
+              "notes": { "type": "string" }
+            }
+          }
+        },
+        "total_budget": { "type": "string" },
+        "contingency_percentage": { "type": "number" },
+        "contingency_amount": { "type": "string" },
+        "grand_total": { "type": "string" },
+        "key_dates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "milestone": { "type": "string" },
+              "date": { "type": "string" },
+              "dependency": { "type": "string" }
+            }
+          }
+        },
+        "critical_path": { "type": "array", "items": { "type": "string" } },
+        "internal_dependencies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "dependency": { "type": "string" },
+              "owner": { "type": "string" },
+              "status": { "type": "string" }
+            }
+          }
+        },
+        "external_dependencies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "dependency": { "type": "string" },
+              "owner": { "type": "string" },
+              "status": { "type": "string" }
+            }
+          }
+        },
+        "dev_environment": { "type": "array", "items": { "type": "string" } },
+        "test_environment": { "type": "array", "items": { "type": "string" } },
+        "prod_environment": { "type": "array", "items": { "type": "string" } },
+        "methodology": { "type": "string" },
+        "ceremonies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "frequency": { "type": "string" },
+              "participants": { "type": "string" }
+            }
+          }
+        },
+        "reporting": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "report": { "type": "string" },
+              "frequency": { "type": "string" },
+              "audience": { "type": "string" }
+            }
+          }
+        },
+        "support_during_dev": { "type": "string" },
+        "support_post_launch": { "type": "string" },
+        "must_have": { "type": "array", "items": { "type": "string" } },
+        "should_have": { "type": "array", "items": { "type": "string" } },
+        "nice_to_have": { "type": "array", "items": { "type": "string" } },
+        "commitments": { "type": "array", "items": { "type": "string" } },
+        "approvers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "role": { "type": "string" },
+              "approval_for": { "type": "string" }
+            }
+          }
+        },
+        "open_questions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "description": "Global open questions across all sections",
+      "items": { "type": "string" }
+    }
+  }
+}

@@ -1,0 +1,592 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lorework.local/schemas/development.schema.json",
+  "title": "Development",
+  "description": "Schema for development artifacts",
+  "type": "object",
+  "required": ["project_name", "generated_date"],
+  "properties": {
+    "project_name": {
+      "type": "string",
+      "description": "Name of the project"
+    },
+    "generated_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the development artifact was generated"
+    },
+    "task_breakdown": {
+      "type": "object",
+      "description": "Task breakdown data",
+      "properties": {
+        "sprint_name": { "type": "string" },
+        "total_tasks": { "type": "integer", "minimum": 0 },
+        "total_points": { "type": "integer", "minimum": 0 },
+        "sprint_capacity": { "type": "integer", "minimum": 0 },
+        "utilization": { "type": "number", "minimum": 0, "maximum": 200 },
+        "sprint_goals": { "type": "array", "items": { "type": "string" } },
+        "tasks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "title", "status", "points"],
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" },
+              "description": { "type": "string" },
+              "status": {
+                "type": "string",
+                "enum": ["todo", "in_progress", "review", "done", "blocked"]
+              },
+              "priority": {
+                "type": "string",
+                "enum": ["critical", "high", "medium", "low"]
+              },
+              "points": {
+                "type": "integer",
+                "enum": [1, 2, 3, 5, 8, 13, 21]
+              },
+              "assignee": { "type": "string" },
+              "estimated_hours": { "type": "number", "minimum": 0 },
+              "acceptance_criteria": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "technical_notes": { "type": "string" },
+              "dependencies": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "task_id": { "type": "string" },
+                    "title": { "type": "string" },
+                    "status": { "type": "string" }
+                  }
+                }
+              },
+              "blocked_by": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "subtasks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string" },
+                    "title": { "type": "string" },
+                    "points": { "type": "integer" },
+                    "status": { "type": "string" }
+                  }
+                }
+              },
+              "specifications": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": { "type": "string" },
+                    "reference": { "type": "string" }
+                  }
+                }
+              },
+              "test_strategy": { "type": "string" },
+              "definition_of_done": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        },
+        "critical_tasks": {
+          "type": "array",
+          "items": { "$ref": "#/properties/task_breakdown/properties/tasks/items" }
+        },
+        "high_priority_tasks": {
+          "type": "array",
+          "items": { "$ref": "#/properties/task_breakdown/properties/tasks/items" }
+        },
+        "medium_priority_tasks": {
+          "type": "array",
+          "items": { "$ref": "#/properties/task_breakdown/properties/tasks/items" }
+        },
+        "low_priority_tasks": {
+          "type": "array",
+          "items": { "$ref": "#/properties/task_breakdown/properties/tasks/items" }
+        },
+        "dependency_graph": { "type": "string" },
+        "risks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "description": { "type": "string" },
+              "impact": { "type": "string" },
+              "mitigation": { "type": "string" },
+              "owner": { "type": "string" }
+            }
+          }
+        },
+        "velocity_history": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sprint": { "type": "string" },
+              "planned": { "type": "integer" },
+              "completed": { "type": "integer" },
+              "velocity": { "type": "integer" }
+            }
+          }
+        },
+        "average_velocity": { "type": "number" },
+        "notes": { "type": "string" },
+        "open_questions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "code_reviews": {
+      "type": "array",
+      "description": "Code review records",
+      "items": {
+        "type": "object",
+        "properties": {
+          "feature_name": { "type": "string" },
+          "author": { "type": "string" },
+          "reviewers": { "type": "string" },
+          "pr_link": { "type": "string" },
+          "branch_name": { "type": "string" },
+          "related_tasks": { "type": "string" },
+          "files_changed": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "file": { "type": "string" },
+                "added": { "type": "integer" },
+                "removed": { "type": "integer" },
+                "change_type": { "type": "string" }
+              }
+            }
+          },
+          "total_added": { "type": "integer" },
+          "total_removed": { "type": "integer" },
+          "requirements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "requirement": { "type": "string" },
+                "implemented": { "type": "boolean" },
+                "verified": { "type": "boolean" },
+                "notes": { "type": "string" }
+              }
+            }
+          },
+          "use_cases": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "name": { "type": "string" },
+                "status": { "type": "string" }
+              }
+            }
+          },
+          "checklist": {
+            "type": "object",
+            "properties": {
+              "correctness": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "item": { "type": "string" },
+                    "passed": { "type": "boolean" }
+                  }
+                }
+              },
+              "readability": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "item": { "type": "string" },
+                    "passed": { "type": "boolean" }
+                  }
+                }
+              },
+              "maintainability": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "item": { "type": "string" },
+                    "passed": { "type": "boolean" }
+                  }
+                }
+              },
+              "performance": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "item": { "type": "string" },
+                    "passed": { "type": "boolean" }
+                  }
+                }
+              },
+              "security": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "item": { "type": "string" },
+                    "passed": { "type": "boolean" }
+                  }
+                }
+              },
+              "testing": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "item": { "type": "string" },
+                    "passed": { "type": "boolean" }
+                  }
+                }
+              },
+              "documentation": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "item": { "type": "string" },
+                    "passed": { "type": "boolean" }
+                  }
+                }
+              }
+            }
+          },
+          "coverage_target": { "type": "string" },
+          "issues": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "severity": { "type": "string", "enum": ["blocker", "major", "minor", "suggestion"] },
+                "title": { "type": "string" },
+                "file": { "type": "string" },
+                "line": { "type": "integer" },
+                "description": { "type": "string" },
+                "suggestion": { "type": "string" },
+                "status": { "type": "string", "enum": ["open", "resolved", "wontfix"] }
+              }
+            }
+          },
+          "suggestions": { "type": "array", "items": { "type": "string" } },
+          "kudos": { "type": "array", "items": { "type": "string" } },
+          "verdict": {
+            "type": "string",
+            "enum": ["Approved", "Approved with Comments", "Changes Requested", "Rejected"]
+          },
+          "reviewer_comments": { "type": "string" },
+          "follow_up": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "implementation_guides": {
+      "type": "array",
+      "description": "Implementation guide documents",
+      "items": {
+        "type": "object",
+        "properties": {
+          "feature_name": { "type": "string" },
+          "feature_overview": { "type": "string" },
+          "goals": { "type": "array", "items": { "type": "string" } },
+          "non_goals": { "type": "array", "items": { "type": "string" } },
+          "knowledge_required": { "type": "array", "items": { "type": "string" } },
+          "environment_setup": { "type": "array", "items": { "type": "string" } },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "version": { "type": "string" },
+                "purpose": { "type": "string" }
+              }
+            }
+          },
+          "component_diagram": { "type": "string" },
+          "architecture_context": { "type": "string" },
+          "related_components": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "relationship": { "type": "string" }
+              }
+            }
+          },
+          "implementation_steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "number": { "type": "integer" },
+                "title": { "type": "string" },
+                "objective": { "type": "string" },
+                "files": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "action": { "type": "string", "enum": ["create", "modify", "delete"] },
+                      "path": { "type": "string" },
+                      "purpose": { "type": "string" }
+                    }
+                  }
+                },
+                "instructions": { "type": "string" },
+                "code_examples": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "title": { "type": "string" },
+                      "language": { "type": "string" },
+                      "code": { "type": "string" },
+                      "explanation": { "type": "string" }
+                    }
+                  }
+                },
+                "verification": { "type": "array", "items": { "type": "string" } },
+                "pitfalls": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          },
+          "data_models": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "language": { "type": "string" },
+                "schema": { "type": "string" },
+                "fields": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": { "type": "string" },
+                      "type": { "type": "string" },
+                      "required": { "type": "boolean" },
+                      "description": { "type": "string" }
+                    }
+                  }
+                },
+                "relationships": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          },
+          "api_endpoints": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "method": { "type": "string", "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"] },
+                "path": { "type": "string" },
+                "description": { "type": "string" },
+                "authentication": { "type": "string" },
+                "request_example": { "type": "string" },
+                "response_success": { "type": "string" },
+                "response_error": { "type": "string" },
+                "error_codes": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "code": { "type": "string" },
+                      "description": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "unit_tests": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "file": { "type": "string" },
+                "cases": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "description": { "type": "string" }
+                    }
+                  }
+                },
+                "language": { "type": "string" },
+                "example": { "type": "string" }
+              }
+            }
+          },
+          "integration_tests": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "scope": { "type": "string" },
+                "setup": { "type": "string" },
+                "cases": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "description": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "manual_tests": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "description": { "type": "string" },
+                "completed": { "type": "boolean" }
+              }
+            }
+          },
+          "expected_errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "condition": { "type": "string" },
+                "type": { "type": "string" },
+                "handling": { "type": "string" }
+              }
+            }
+          },
+          "retry_strategy": { "type": "string" },
+          "logging_guidance": { "type": "string" },
+          "performance_items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "area": { "type": "string" },
+                "consideration": { "type": "string" }
+              }
+            }
+          },
+          "security_items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "area": { "type": "string" },
+                "consideration": { "type": "string" }
+              }
+            }
+          },
+          "env_vars": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "required": { "type": "boolean" },
+                "default": { "type": "string" },
+                "description": { "type": "string" }
+              }
+            }
+          },
+          "feature_flags": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "default": { "type": "boolean" },
+                "description": { "type": "string" }
+              }
+            }
+          },
+          "rollout_phases": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "number": { "type": "integer" },
+                "name": { "type": "string" },
+                "scope": { "type": "string" },
+                "validation": { "type": "string" },
+                "rollback_trigger": { "type": "string" }
+              }
+            }
+          },
+          "monitoring": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "metric": { "type": "string" },
+                "threshold": { "type": "string" },
+                "action": { "type": "string" }
+              }
+            }
+          },
+          "rollback_procedure": { "type": "string" },
+          "definition_of_done": { "type": "array", "items": { "type": "string" } },
+          "spec_references": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string" },
+                "link": { "type": "string" }
+              }
+            }
+          },
+          "external_docs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "link": { "type": "string" }
+              }
+            }
+          },
+          "related_adrs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "number": { "type": "integer" },
+                "title": { "type": "string" }
+              }
+            }
+          },
+          "open_questions": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "description": "Global open questions",
+      "items": { "type": "string" }
+    }
+  }
+}
