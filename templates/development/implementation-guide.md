@@ -333,3 +333,7 @@
 ---
 
 *Development Document - Implementation Guide*
+
+---
+
+<sub>Built with [LoreWork](https://github.com/phelpsbn42/LoreWork) - Capture organizational knowledge through structured, AI-guided solution delivery.</sub>

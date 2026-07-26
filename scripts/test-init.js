@@ -52,20 +52,12 @@ describe('PROJECT_DIRECTORIES', () => {
     assert(PROJECT_DIRECTORIES.includes('input'));
   });
 
-  test('includes output/inception-deck', () => {
-    assert(PROJECT_DIRECTORIES.includes('output/inception-deck'));
+  test('includes output directory', () => {
+    assert(PROJECT_DIRECTORIES.includes('output'));
   });
 
-  test('includes output/specification', () => {
-    assert(PROJECT_DIRECTORIES.includes('output/specification'));
-  });
-
-  test('includes output/development', () => {
-    assert(PROJECT_DIRECTORIES.includes('output/development'));
-  });
-
-  test('has exactly 4 directories', () => {
-    assert.strictEqual(PROJECT_DIRECTORIES.length, 4);
+  test('has exactly 2 directories (flat structure)', () => {
+    assert.strictEqual(PROJECT_DIRECTORIES.length, 2);
   });
 });
 
@@ -248,9 +240,6 @@ describe('createProjectReadme', () => {
     const readme = createProjectReadme(metadata);
     assert(readme.includes('input/'));
     assert(readme.includes('output/'));
-    assert(readme.includes('inception-deck/'));
-    assert(readme.includes('specification/'));
-    assert(readme.includes('development/'));
   });
 
   test('includes getting started section', () => {

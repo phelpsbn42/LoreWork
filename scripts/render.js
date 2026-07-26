@@ -16,6 +16,7 @@ const path = require('path');
 const Handlebars = require('handlebars');
 const { program } = require('commander');
 
+// Configure program (but don't parse yet - that happens at the bottom when run directly)
 program
   .name('lw-render')
   .description('Render LoreWork templates with JSON data')
@@ -25,73 +26,154 @@ program
   .option('-o, --output <path>', 'Output file path (default: stdout)')
   .option('-p, --project <name>', 'Project name (auto-resolves paths)')
   .option('--partial <paths...>', 'Additional partial templates to register')
-  .option('--strict', 'Fail on missing variables')
-  .parse(process.argv);
+  .option('--strict', 'Fail on missing variables');
 
-const options = program.opts();
+// =============================================================================
+// Core Functions (testable, no I/O side effects)
+// =============================================================================
 
-async function main() {
+/**
+ * Render a template with data
+ * @param {string} templateContent - The Handlebars template string
+ * @param {object} data - The data to render
+ * @param {object} options - Render options
+ * @param {boolean} options.strict - Fail on missing variables
+ * @returns {string} The rendered output
+ */
+function renderTemplate(templateContent, data, options = {}) {
+  // Add generated_date if not present
+  const renderData = { ...data };
+  if (!renderData.generated_date) {
+    renderData.generated_date = new Date().toISOString().split('T')[0];
+  }
+
+  const compileOptions = options.strict ? { strict: true } : {};
+  const template = Handlebars.compile(templateContent, compileOptions);
+  return template(renderData);
+}
+
+/**
+ * Parse JSON data with error handling
+ * @param {string} jsonString - The JSON string to parse
+ * @returns {object} Parsed data
+ * @throws {Error} If JSON is invalid
+ */
+function parseJsonData(jsonString) {
+  try {
+    return JSON.parse(jsonString);
+  } catch (e) {
+    throw new Error(`Invalid JSON: ${e.message}`);
+  }
+}
+
+/**
+ * Register a partial template
+ * @param {string} name - The partial name
+ * @param {string} content - The partial template content
+ */
+function registerPartial(name, content) {
+  Handlebars.registerPartial(name, content);
+}
+
+/**
+ * Resolve project-relative paths
+ * @param {string} dataPath - The data file path
+ * @param {string} projectName - The project name
+ * @param {string} cwd - Current working directory
+ * @returns {object} Resolved paths or null if project not found
+ */
+function resolveProjectPaths(dataPath, projectName, cwd) {
+  const projectDir = path.join(cwd, 'projects', projectName);
+
+  if (!fs.existsSync(projectDir)) {
+    return { error: `Project directory not found: ${projectDir}` };
+  }
+
+  let resolvedDataPath = dataPath;
+
+  // If data path is relative and doesn't exist, try project directories
+  if (!path.isAbsolute(dataPath) && !fs.existsSync(dataPath)) {
+    const possiblePaths = [
+      path.join(projectDir, 'output', dataPath),
+      path.join(projectDir, 'input', dataPath),
+    ];
+    for (const p of possiblePaths) {
+      if (fs.existsSync(p)) {
+        resolvedDataPath = p;
+        break;
+      }
+    }
+  }
+
+  return { projectDir, dataPath: resolvedDataPath };
+}
+
+/**
+ * Resolve template path
+ * @param {string} templatePath - The template file path
+ * @param {string} cwd - Current working directory
+ * @returns {object} Resolved path or error
+ */
+function resolveTemplatePath(templatePath, cwd) {
+  if (fs.existsSync(templatePath)) {
+    return { templatePath };
+  }
+
+  // Try relative to templates directory
+  const templatesPath = path.join(cwd, 'templates', templatePath);
+  if (fs.existsSync(templatesPath)) {
+    return { templatePath: templatesPath };
+  }
+
+  return { error: `Template file not found: ${templatePath}` };
+}
+
+// =============================================================================
+// CLI Main Function (handles I/O)
+// =============================================================================
+
+async function main(options) {
   try {
     // Resolve paths
     let templatePath = options.template;
     let dataPath = options.data;
     let outputPath = options.output;
+    const cwd = process.cwd();
 
     // If project is specified, resolve paths relative to project
     if (options.project) {
-      const projectDir = path.join(process.cwd(), 'projects', options.project);
-      if (!fs.existsSync(projectDir)) {
-        console.error(`Error: Project directory not found: ${projectDir}`);
+      const resolved = resolveProjectPaths(dataPath, options.project, cwd);
+      if (resolved.error) {
+        console.error(`Error: ${resolved.error}`);
         process.exit(1);
       }
-
-      // If data path is relative and doesn't exist, try project output directories
-      if (!path.isAbsolute(dataPath) && !fs.existsSync(dataPath)) {
-        const possiblePaths = [
-          path.join(projectDir, 'output', 'inception-deck', dataPath),
-          path.join(projectDir, 'output', 'specification', dataPath),
-          path.join(projectDir, 'output', 'development', dataPath),
-          path.join(projectDir, 'input', dataPath),
-        ];
-        for (const p of possiblePaths) {
-          if (fs.existsSync(p)) {
-            dataPath = p;
-            break;
-          }
-        }
-      }
+      dataPath = resolved.dataPath;
     }
+
+    // Resolve template path
+    const templateResolved = resolveTemplatePath(templatePath, cwd);
+    if (templateResolved.error) {
+      console.error(`Error: ${templateResolved.error}`);
+      process.exit(1);
+    }
+    templatePath = templateResolved.templatePath;
 
     // Read template
-    if (!fs.existsSync(templatePath)) {
-      // Try relative to templates directory
-      const templatesPath = path.join(process.cwd(), 'templates', templatePath);
-      if (fs.existsSync(templatesPath)) {
-        templatePath = templatesPath;
-      } else {
-        console.error(`Error: Template file not found: ${templatePath}`);
-        process.exit(1);
-      }
-    }
     const templateContent = fs.readFileSync(templatePath, 'utf-8');
 
-    // Read data
+    // Read and parse data
     if (!fs.existsSync(dataPath)) {
       console.error(`Error: Data file not found: ${dataPath}`);
       process.exit(1);
     }
     const dataContent = fs.readFileSync(dataPath, 'utf-8');
+
     let data;
     try {
-      data = JSON.parse(dataContent);
+      data = parseJsonData(dataContent);
     } catch (e) {
-      console.error(`Error: Invalid JSON in data file: ${e.message}`);
+      console.error(`Error: ${e.message}`);
       process.exit(1);
-    }
-
-    // Add metadata if not present
-    if (!data.generated_date) {
-      data.generated_date = new Date().toISOString().split('T')[0];
     }
 
     // Register any partial templates
@@ -100,15 +182,13 @@ async function main() {
         if (fs.existsSync(partialPath)) {
           const partialName = path.basename(partialPath, path.extname(partialPath));
           const partialContent = fs.readFileSync(partialPath, 'utf-8');
-          Handlebars.registerPartial(partialName, partialContent);
+          registerPartial(partialName, partialContent);
         }
       }
     }
 
-    // Compile and render
-    const compileOptions = options.strict ? { strict: true } : {};
-    const template = Handlebars.compile(templateContent, compileOptions);
-    const rendered = template(data);
+    // Render template
+    const rendered = renderTemplate(templateContent, data, { strict: options.strict });
 
     // Output
     if (outputPath) {
@@ -161,9 +241,11 @@ function registerHelpers() {
   });
 
   // Join array with delimiter
-  Handlebars.registerHelper('join', function(array, delimiter) {
+  Handlebars.registerHelper('join', function(array, delimiter, options) {
     if (!Array.isArray(array)) return '';
-    return array.join(delimiter || ', ');
+    // If delimiter is the Handlebars options object, use default
+    const sep = (typeof delimiter === 'string') ? delimiter : ', ';
+    return array.join(sep);
   });
 
   // Repeat block n times
@@ -231,8 +313,10 @@ function registerHelpers() {
   });
 
   // Pluralize
-  Handlebars.registerHelper('pluralize', function(count, singular, plural) {
-    return count === 1 ? singular : (plural || singular + 's');
+  Handlebars.registerHelper('pluralize', function(count, singular, plural, options) {
+    // If plural is the Handlebars options object, use default pluralization
+    const pluralForm = (typeof plural === 'string') ? plural : singular + 's';
+    return count === 1 ? singular : pluralForm;
   });
 
   // Length of array
@@ -241,11 +325,13 @@ function registerHelpers() {
   });
 
   // Sum array of numbers or property
-  Handlebars.registerHelper('sum', function(array, property) {
+  Handlebars.registerHelper('sum', function(array, property, options) {
     if (!Array.isArray(array)) return 0;
-    if (property) {
+    // If property is a string (not Handlebars options object), sum that property
+    if (typeof property === 'string') {
       return array.reduce((sum, item) => sum + (item[property] || 0), 0);
     }
+    // Otherwise sum the array values directly
     return array.reduce((sum, item) => sum + (item || 0), 0);
   });
 
@@ -256,7 +342,7 @@ function registerHelpers() {
 
   // JSON stringify for debugging
   Handlebars.registerHelper('json', function(context) {
-    return JSON.stringify(context, null, 2);
+    return new Handlebars.SafeString(JSON.stringify(context, null, 2));
   });
 
   // Mermaid diagram wrapper
@@ -271,10 +357,20 @@ function registerHelpers() {
 }
 
 // Export for testing
-module.exports = { registerHelpers, Handlebars };
+module.exports = {
+  registerHelpers,
+  Handlebars,
+  renderTemplate,
+  parseJsonData,
+  registerPartial,
+  resolveProjectPaths,
+  resolveTemplatePath
+};
 
 // Only run main when executed directly (not when required as a module)
 if (require.main === module) {
+  program.parse(process.argv);
+  const options = program.opts();
   registerHelpers();
-  main();
+  main(options);
 }

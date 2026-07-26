@@ -77,6 +77,9 @@ If you're curious about working with AI but unsure where to begin, LoreWork prov
 
 This is a learning tool as much as a productivity tool. Start here, build confidence, then take what you've learned to other AI interactions.
 
+### Your Collaborative Coach
+The personas don't just generate artifacts—they coach you through the process of building software. They ask probing questions, challenge assumptions, and guide you through established methodologies step by step. Think of them as experienced colleagues who help you think through problems, not just tools that produce output.
+
 ---
 
 ### Features
@@ -324,21 +327,21 @@ Load personas by copying content into the assistant's system prompt or custom in
 ┌─────────────────────────────────────────────────────────────────────┐
 │                           ANALYST                                    │
 │  Input:  User-provided documents, conversations                     │
-│  Output: output/inception-deck/ → copies to input/                  │
+│  Output: output/ → copies to input/                                  │
 └──────────────────────────────┬──────────────────────────────────────┘
                                │
                                ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │                      SOLUTION ARCHITECT                              │
 │  Input:  input/inception-deck.md                                    │
-│  Output: output/specification/ → copies to input/                   │
+│  Output: output/ → copies to input/                                  │
 └──────────────────────────────┬──────────────────────────────────────┘
                                │
                                ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │                       PAIRED DEVELOPER                               │
 │  Input:  input/inception-deck.md + input/specification.md          │
-│  Output: output/development/ + working code                         │
+│  Output: output/ + working code                                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -365,6 +368,7 @@ If a downstream persona detects contradictions with upstream artifacts:
 LoreWork/
 ├── README.md
 ├── QUICKSTART.md
+├── lorework.yaml              # Configuration (storage backend, paths)
 ├── LoreWork.png
 │
 ├── personas/
@@ -392,10 +396,7 @@ LoreWork/
 └── projects/
     └── <project-name>/
         ├── input/              # Upstream artifacts + user docs
-        └── output/
-            ├── inception-deck/
-            ├── specification/
-            └── development/
+        └── output/             # All generated artifacts (flat)
 ```
 
 ---
@@ -479,8 +480,8 @@ npm install
 ```bash
 # Render inception deck
 npm run render -- -t templates/inception-deck/inception-deck.md \
-                  -d projects/my-project/output/inception-deck/inception-deck.json \
-                  -o projects/my-project/output/inception-deck/inception-deck-rendered.md
+                  -d projects/my-project/output/inception-deck.json \
+                  -o projects/my-project/output/inception-deck-rendered.md
 
 # Or use the CLI directly
 ./scripts/render.js --template templates/specification/specification.md \
@@ -498,9 +499,6 @@ npm run init -- my-new-project --description "My awesome project"
 # projects/my-new-project/
 # ├── input/
 # ├── output/
-# │   ├── inception-deck/
-# │   ├── specification/
-# │   └── development/
 # ├── project.json
 # └── README.md
 ```

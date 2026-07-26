@@ -31,99 +31,162 @@ try {
   };
 }
 
+// Configure program (but don't parse yet - that happens at the bottom when run directly)
 program
   .name('lw-validate')
   .description('Validate JSON data against LoreWork schemas')
   .version('1.0.0')
   .requiredOption('-d, --data <path>', 'Path to JSON data file')
   .requiredOption('-s, --schema <type>', 'Schema type: project-meta, inception-deck, specification, development')
-  .option('-v, --verbose', 'Show detailed validation errors')
-  .parse(process.argv);
-
-const options = program.opts();
+  .option('-v, --verbose', 'Show detailed validation errors');
 
 const schemaTypes = ['project-meta', 'inception-deck', 'specification', 'development'];
 
-if (!schemaTypes.includes(options.schema)) {
-  console.error(chalk.red(`Error: Invalid schema type. Must be one of: ${schemaTypes.join(', ')}`));
-  process.exit(1);
+// =============================================================================
+// Core Functions (testable, no I/O side effects)
+// =============================================================================
+
+/**
+ * Create a configured AJV validator instance
+ * @param {object} options - Validator options
+ * @param {boolean} options.verbose - Include verbose error info
+ * @returns {Ajv} Configured AJV instance
+ */
+function createValidator(options = {}) {
+  const ajv = new Ajv({ allErrors: true, verbose: options.verbose });
+  addFormats(ajv);
+  return ajv;
 }
 
-async function main() {
+/**
+ * Validate data against a schema
+ * @param {object} data - The data to validate
+ * @param {object} schema - The JSON schema
+ * @param {object} options - Validation options
+ * @returns {object} Result with valid flag and errors array
+ */
+function validateData(data, schema, options = {}) {
+  const ajv = createValidator(options);
+  const validate = ajv.compile(schema);
+  const valid = validate(data);
+
+  return {
+    valid,
+    errors: valid ? [] : validate.errors
+  };
+}
+
+/**
+ * Format validation errors for display
+ * @param {Array} errors - AJV error array
+ * @param {boolean} verbose - Include detailed params
+ * @returns {Array} Formatted error strings
+ */
+function formatValidationErrors(errors, verbose = false) {
+  return errors.map(error => {
+    const location = error.instancePath || '(root)';
+    let message = `${location}: ${error.message}`;
+    if (verbose && error.params) {
+      message += ` (${JSON.stringify(error.params)})`;
+    }
+    return message;
+  });
+}
+
+/**
+ * Load and parse a schema file
+ * @param {string} schemaType - Schema type name
+ * @param {string} schemasDir - Path to schemas directory
+ * @returns {object} Result with schema or error
+ */
+function loadSchema(schemaType, schemasDir) {
+  if (!schemaTypes.includes(schemaType)) {
+    return { error: `Invalid schema type. Must be one of: ${schemaTypes.join(', ')}` };
+  }
+
+  const schemaPath = path.join(schemasDir, `${schemaType}.schema.json`);
+
+  if (!fs.existsSync(schemaPath)) {
+    return { error: `Schema file not found: ${schemaPath}` };
+  }
+
   try {
-    // Find schema file
-    const schemaPath = path.join(process.cwd(), 'schemas', `${options.schema}.schema.json`);
-    if (!fs.existsSync(schemaPath)) {
-      console.error(chalk.red(`Error: Schema file not found: ${schemaPath}`));
-      process.exit(1);
-    }
-
-    // Find data file
-    let dataPath = options.data;
-    if (!fs.existsSync(dataPath)) {
-      // Try relative to current directory
-      const cwdPath = path.join(process.cwd(), dataPath);
-      if (fs.existsSync(cwdPath)) {
-        dataPath = cwdPath;
-      } else {
-        console.error(chalk.red(`Error: Data file not found: ${dataPath}`));
-        process.exit(1);
-      }
-    }
-
-    // Load schema
     const schemaContent = fs.readFileSync(schemaPath, 'utf-8');
-    const schema = JSON.parse(schemaContent);
+    return { schema: JSON.parse(schemaContent), schemaPath };
+  } catch (e) {
+    return { error: `Invalid schema JSON: ${e.message}` };
+  }
+}
 
-    // Load data
-    const dataContent = fs.readFileSync(dataPath, 'utf-8');
-    let data;
-    try {
-      data = JSON.parse(dataContent);
-    } catch (e) {
-      console.error(chalk.red(`Error: Invalid JSON in data file: ${e.message}`));
-      process.exit(1);
-    }
+/**
+ * Parse JSON data with error handling
+ * @param {string} jsonString - The JSON string to parse
+ * @returns {object} Result with data or error
+ */
+function parseData(jsonString) {
+  try {
+    return { data: JSON.parse(jsonString) };
+  } catch (e) {
+    return { error: `Invalid JSON: ${e.message}` };
+  }
+}
 
-    // Set up validator
-    const ajv = new Ajv({ allErrors: true, verbose: options.verbose });
-    addFormats(ajv);
+// =============================================================================
+// CLI Main Function (handles I/O)
+// =============================================================================
 
-    // Validate
-    const validate = ajv.compile(schema);
-    const valid = validate(data);
+async function main(options) {
+  const cwd = process.cwd();
+  const schemasDir = path.join(cwd, 'schemas');
 
-    console.log('');
-    console.log(chalk.bold(`Validating: ${path.basename(dataPath)}`));
-    console.log(chalk.gray(`Schema: ${options.schema}`));
-    console.log('');
+  // Load schema
+  const schemaResult = loadSchema(options.schema, schemasDir);
+  if (schemaResult.error) {
+    console.error(chalk.red(`Error: ${schemaResult.error}`));
+    process.exit(1);
+  }
 
-    if (valid) {
-      console.log(chalk.green('✓ Validation passed'));
-      console.log('');
-
-      // Show summary
-      showDataSummary(data, options.schema);
-
+  // Find data file
+  let dataPath = options.data;
+  if (!fs.existsSync(dataPath)) {
+    const cwdPath = path.join(cwd, dataPath);
+    if (fs.existsSync(cwdPath)) {
+      dataPath = cwdPath;
     } else {
-      console.log(chalk.red('✗ Validation failed'));
-      console.log('');
-
-      // Show errors
-      console.log(chalk.bold('Errors:'));
-      for (const error of validate.errors) {
-        const location = error.instancePath || '(root)';
-        console.log(chalk.red(`  • ${location}: ${error.message}`));
-        if (options.verbose && error.params) {
-          console.log(chalk.gray(`    ${JSON.stringify(error.params)}`));
-        }
-      }
-      console.log('');
+      console.error(chalk.red(`Error: Data file not found: ${dataPath}`));
       process.exit(1);
     }
+  }
 
-  } catch (error) {
-    console.error(chalk.red(`Error: ${error.message}`));
+  // Load and parse data
+  const dataContent = fs.readFileSync(dataPath, 'utf-8');
+  const dataResult = parseData(dataContent);
+  if (dataResult.error) {
+    console.error(chalk.red(`Error: ${dataResult.error}`));
+    process.exit(1);
+  }
+
+  // Validate
+  const result = validateData(dataResult.data, schemaResult.schema, { verbose: options.verbose });
+
+  console.log('');
+  console.log(chalk.bold(`Validating: ${path.basename(dataPath)}`));
+  console.log(chalk.gray(`Schema: ${options.schema}`));
+  console.log('');
+
+  if (result.valid) {
+    console.log(chalk.green('✓ Validation passed'));
+    console.log('');
+    showDataSummary(dataResult.data, options.schema);
+  } else {
+    console.log(chalk.red('✗ Validation failed'));
+    console.log('');
+    console.log(chalk.bold('Errors:'));
+    const formattedErrors = formatValidationErrors(result.errors, options.verbose);
+    for (const error of formattedErrors) {
+      console.log(chalk.red(`  • ${error}`));
+    }
+    console.log('');
     process.exit(1);
   }
 }
@@ -188,9 +251,19 @@ function showDataSummary(data, schemaType) {
 }
 
 // Export for testing
-module.exports = { showDataSummary, schemaTypes };
+module.exports = {
+  showDataSummary,
+  schemaTypes,
+  createValidator,
+  validateData,
+  formatValidationErrors,
+  loadSchema,
+  parseData
+};
 
 // Only run main when executed directly
 if (require.main === module) {
-  main();
+  program.parse(process.argv);
+  const options = program.opts();
+  main(options);
 }

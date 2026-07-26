@@ -16,7 +16,15 @@ const path = require('path');
 const os = require('os');
 
 // Import the renderer module
-const { registerHelpers, Handlebars } = require('./render.js');
+const {
+  registerHelpers,
+  Handlebars,
+  renderTemplate,
+  parseJsonData,
+  registerPartial,
+  resolveProjectPaths,
+  resolveTemplatePath
+} = require('./render.js');
 
 // Register helpers before tests
 registerHelpers();
@@ -492,6 +500,135 @@ Name: {{default name "Unknown"}}
     const result = render(template, {});
     assert(result.includes('Items: 0'));
     assert(result.includes('Name: Unknown'));
+  });
+});
+
+// =============================================================================
+// Core Function Tests
+// =============================================================================
+
+describe('renderTemplate', () => {
+  test('renders simple template', () => {
+    const result = renderTemplate('Hello {{name}}!', { name: 'World' });
+    assert.strictEqual(result, 'Hello World!');
+  });
+
+  test('adds generated_date if not present', () => {
+    const result = renderTemplate('Date: {{generated_date}}', {});
+    assert(/^\d{4}-\d{2}-\d{2}$/.test(result.replace('Date: ', '')));
+  });
+
+  test('preserves existing generated_date', () => {
+    const result = renderTemplate('Date: {{generated_date}}', { generated_date: '2024-01-15' });
+    assert.strictEqual(result, 'Date: 2024-01-15');
+  });
+
+  test('respects strict option', () => {
+    try {
+      renderTemplate('Hello {{name}}!', {}, { strict: true });
+      assert.fail('Should have thrown');
+    } catch (e) {
+      assert(e.message.includes('name'));
+    }
+  });
+
+  test('renders complex template with helpers', () => {
+    const template = '{{uppercase name}} has {{length items}} items';
+    const result = renderTemplate(template, { name: 'test', items: [1, 2, 3] });
+    assert.strictEqual(result, 'TEST has 3 items');
+  });
+});
+
+describe('parseJsonData', () => {
+  test('parses valid JSON', () => {
+    const result = parseJsonData('{"name": "test", "value": 42}');
+    assert.strictEqual(result.name, 'test');
+    assert.strictEqual(result.value, 42);
+  });
+
+  test('parses JSON array', () => {
+    const result = parseJsonData('[1, 2, 3]');
+    assert.deepStrictEqual(result, [1, 2, 3]);
+  });
+
+  test('throws on invalid JSON', () => {
+    try {
+      parseJsonData('{ invalid json }');
+      assert.fail('Should have thrown');
+    } catch (e) {
+      assert(e.message.includes('Invalid JSON'));
+    }
+  });
+
+  test('throws on empty string', () => {
+    try {
+      parseJsonData('');
+      assert.fail('Should have thrown');
+    } catch (e) {
+      assert(e.message.includes('Invalid JSON'));
+    }
+  });
+});
+
+describe('registerPartial', () => {
+  test('registers and uses partial', () => {
+    registerPartial('testPartial', 'Hello from partial!');
+    const result = render('{{> testPartial}}', {});
+    assert.strictEqual(result, 'Hello from partial!');
+  });
+
+  test('registers partial with variables', () => {
+    registerPartial('greeting', 'Hello {{name}}!');
+    const result = render('{{> greeting}}', { name: 'World' });
+    assert.strictEqual(result, 'Hello World!');
+  });
+});
+
+describe('resolveTemplatePath', () => {
+  const cwd = process.cwd();
+
+  test('returns path if file exists', () => {
+    const result = resolveTemplatePath('scripts/render.js', cwd);
+    assert(result.templatePath);
+    assert(!result.error);
+  });
+
+  test('resolves relative to templates directory', () => {
+    const result = resolveTemplatePath('inception-deck/inception-deck.md', cwd);
+    assert(result.templatePath);
+    assert(result.templatePath.includes('templates'));
+  });
+
+  test('returns error for non-existent file', () => {
+    const result = resolveTemplatePath('nonexistent.md', cwd);
+    assert(result.error);
+    assert(result.error.includes('not found'));
+  });
+});
+
+describe('resolveProjectPaths', () => {
+  const cwd = process.cwd();
+
+  test('returns error for non-existent project', () => {
+    const result = resolveProjectPaths('data.json', 'nonexistent-project', cwd);
+    assert(result.error);
+    assert(result.error.includes('not found'));
+  });
+
+  test('returns dataPath unchanged for absolute paths', () => {
+    // Create a temp project for testing
+    const tempDir = path.join(os.tmpdir(), 'lorework-test-' + Date.now());
+    const projectDir = path.join(tempDir, 'projects', 'test-project');
+    fs.mkdirSync(projectDir, { recursive: true });
+
+    const absPath = '/absolute/path/data.json';
+    const result = resolveProjectPaths(absPath, 'test-project', tempDir);
+
+    assert(!result.error);
+    assert.strictEqual(result.dataPath, absPath);
+
+    // Cleanup
+    fs.rmSync(tempDir, { recursive: true });
   });
 });
 

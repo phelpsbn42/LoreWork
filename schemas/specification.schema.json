@@ -15,6 +15,80 @@
       "format": "date",
       "description": "Date the specification was generated"
     },
+    "assumptions": {
+      "type": "array",
+      "description": "Documented assumptions made during design",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "Unique identifier (e.g., ASSUMP-001)" },
+          "description": { "type": "string", "description": "Clear statement of the assumption" },
+          "source": { "type": "string", "description": "Where this assumption originated" },
+          "impact_if_wrong": { "type": "string", "description": "Consequences if assumption proves false" },
+          "validation_plan": { "type": "string", "description": "How and when this will be validated" },
+          "status": { "type": "string", "enum": ["Unvalidated", "Validated", "Invalidated"] }
+        },
+        "required": ["id", "description", "status"]
+      }
+    },
+    "technology_stack": {
+      "type": "array",
+      "description": "Summary of key technologies",
+      "items": {
+        "type": "object",
+        "properties": {
+          "layer": { "type": "string", "description": "Architecture layer (Frontend, Backend, Database, etc.)" },
+          "technology": { "type": "string", "description": "Technology name" },
+          "version": { "type": "string", "description": "Version or version range" },
+          "rationale": { "type": "string", "description": "Why this technology was selected" }
+        },
+        "required": ["layer", "technology"]
+      }
+    },
+    "technology_details": {
+      "type": "array",
+      "description": "Detailed information about each technology choice",
+      "items": {
+        "type": "object",
+        "properties": {
+          "technology": { "type": "string" },
+          "layer": { "type": "string" },
+          "version": { "type": "string" },
+          "license": { "type": "string" },
+          "rationale": { "type": "string" },
+          "alternatives": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "reason_rejected": { "type": "string" }
+              }
+            }
+          },
+          "risks": { "type": "array", "items": { "type": "string" } },
+          "team_readiness": { "type": "string" }
+        }
+      }
+    },
+    "architectural_patterns": {
+      "type": "array",
+      "description": "Architectural patterns applied to the solution",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Pattern name (e.g., CQRS, Repository, MVC)" },
+          "category": { "type": "string", "description": "Pattern category (Structural, Data, Integration, Behavioral)" },
+          "where_applied": { "type": "string", "description": "Which component/layer uses this pattern" },
+          "problem_solved": { "type": "string", "description": "What challenge this addresses" },
+          "implementation_notes": { "type": "string", "description": "How it will be implemented" },
+          "benefits": { "type": "string", "description": "Benefits gained" },
+          "complexity": { "type": "string", "description": "Complexity added" },
+          "references": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["name", "where_applied", "problem_solved"]
+      }
+    },
     "use_cases": {
       "type": "object",
       "description": "Use case documentation",

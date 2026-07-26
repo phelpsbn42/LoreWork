@@ -14,12 +14,10 @@
 const fs = require('fs');
 const path = require('path');
 
-// Directory structure for new projects
+// Directory structure for new projects (flat)
 const PROJECT_DIRECTORIES = [
   'input',
-  'output/inception-deck',
-  'output/specification',
-  'output/development'
+  'output'
 ];
 
 // Validate project name format
@@ -83,10 +81,7 @@ ${metadata.description || '*Add project description here*'}
 \`\`\`
 ${metadata.project_name}/
 ├── input/                  # User documents + upstream artifacts
-├── output/
-│   ├── inception-deck/     # Analyst outputs
-│   ├── specification/      # Solution Architect outputs
-│   └── development/        # Paired Developer outputs
+├── output/                 # All generated artifacts (flat)
 └── project.json            # Project metadata
 \`\`\`
 

@@ -1,0 +1,48 @@
+# LoreWork Configuration
+# Controls how and where artifacts are stored and retrieved.
+
+# Storage backend configuration
+storage:
+  # Backend type: filesystem | database | sharepoint
+  backend: filesystem
+
+  # Filesystem settings (used when backend: filesystem)
+  filesystem:
+    # Base path for projects (relative to LoreWork root)
+    projects_path: projects
+
+  # Database settings (used when backend: database)
+  # database:
+  #   connection_string: ""
+  #   schema: lorework
+
+  # SharePoint settings (used when backend: sharepoint)
+  # sharepoint:
+  #   site_url: ""
+  #   library: "LoreWork Documents"
+  #   client_id: ""
+  #   tenant_id: ""
+
+# Project structure
+project:
+  # Folders created for each project
+  folders:
+    - input
+    - output
+
+# Artifact settings
+artifacts:
+  # Generate JSON alongside markdown
+  generate_json: true
+
+  # JSON schema validation
+  validate_schemas: true
+  schemas_path: schemas
+
+# Persona settings
+personas:
+  path: personas
+  available:
+    - analyst
+    - solution-architect
+    - paired-developer

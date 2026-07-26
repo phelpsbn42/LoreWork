@@ -15,7 +15,9 @@
     "test": "node scripts/test-render.js && node scripts/test-validate.js && node scripts/test-init.js",
     "test:render": "node scripts/test-render.js",
     "test:validate": "node scripts/test-validate.js",
-    "test:init": "node scripts/test-init.js"
+    "test:init": "node scripts/test-init.js",
+    "test:coverage": "c8 npm test",
+    "test:coverage:report": "c8 --reporter=html npm test"
   },
   "keywords": [
     "ai",
@@ -26,12 +28,15 @@
     "handlebars"
   ],
   "author": "",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "handlebars": "^4.7.8",
     "ajv": "^8.12.0",
     "ajv-formats": "^2.1.1",
     "chalk": "^4.1.2",
     "commander": "^11.1.0"
+  },
+  "devDependencies": {
+    "c8": "^8.0.1"
   }
 }

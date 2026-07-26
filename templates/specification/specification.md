@@ -5,6 +5,98 @@
 
 ---
 
+# Assumptions Log
+
+All assumptions made during the design process are documented here. These should be validated as the project progresses.
+
+| ID | Assumption | Source | Impact if Wrong | Validation Plan | Status |
+|----|------------|--------|-----------------|-----------------|--------|
+{{#assumptions}}
+| {{id}} | {{description}} | {{source}} | {{impact_if_wrong}} | {{validation_plan}} | {{status}} |
+{{/assumptions}}
+
+{{^assumptions}}
+*No assumptions documented yet.*
+{{/assumptions}}
+
+---
+
+# Technology Stack
+
+## Overview
+
+Key technologies selected for this solution:
+
+| Layer | Technology | Version | Rationale |
+|-------|------------|---------|-----------|
+{{#technology_stack}}
+| {{layer}} | {{technology}} | {{version}} | {{rationale}} |
+{{/technology_stack}}
+
+## Technology Details
+
+{{#technology_details}}
+### {{technology}}
+
+| Attribute | Value |
+|-----------|-------|
+| **Layer** | {{layer}} |
+| **Version** | {{version}} |
+| **License** | {{license}} |
+
+**Selection Rationale**: {{rationale}}
+
+**Alternatives Considered**:
+{{#alternatives}}
+- {{name}}: {{reason_rejected}}
+{{/alternatives}}
+
+**Risks/Limitations**:
+{{#risks}}
+- {{.}}
+{{/risks}}
+
+**Team Readiness**: {{team_readiness}}
+
+{{/technology_details}}
+
+---
+
+# Architectural Patterns
+
+Patterns applied to this solution:
+
+{{#architectural_patterns}}
+## {{name}}
+
+| Attribute | Value |
+|-----------|-------|
+| **Category** | {{category}} |
+| **Where Applied** | {{where_applied}} |
+
+**Problem Solved**: {{problem_solved}}
+
+**Implementation Notes**: {{implementation_notes}}
+
+**Trade-offs**:
+- **Benefits**: {{benefits}}
+- **Complexity Added**: {{complexity}}
+
+**References**:
+{{#references}}
+- {{.}}
+{{/references}}
+
+---
+
+{{/architectural_patterns}}
+
+{{^architectural_patterns}}
+*No architectural patterns documented yet.*
+{{/architectural_patterns}}
+
+---
+
 # Use Cases
 
 ## Use Case Summary
@@ -842,3 +934,7 @@ flowchart TD
 ---
 
 *Technical Specification - Complete Document*
+
+---
+
+<sub>Built with [LoreWork](https://github.com/phelpsbn42/LoreWork) - Capture organizational knowledge through structured, AI-guided solution delivery.</sub>
