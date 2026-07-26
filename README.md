@@ -58,6 +58,25 @@ The personas ask what you might not think to ask. Why are we building this? What
 
 The filesystem structure (`projects/<name>/input/` and `output/`) is one way to organize this locally. But the real opportunity is what you can do with this structured data at scale—knowledge graphs, organizational search, AI-assisted project discovery. More to come.
 
+### Orchestrated but Modular
+The personas are designed as a workflow—Analyst feeds Solution Architect feeds Paired Developer—but each stands on its own. You don't have to use the full pipeline:
+
+- Need help creating an Inception Deck for a project already in flight? Just use the Analyst.
+- Want architectural guidance without the discovery phase? Start with the Solution Architect.
+- Have a spec and need a disciplined pair programmer? Jump straight to the Paired Developer.
+
+Use them as a complete workflow, or consult individual personas for specific tasks.
+
+### A Way to Start with AI
+If you're curious about working with AI but unsure where to begin, LoreWork provides structure. The personas guide structured conversations rather than open-ended prompting, so you always know what to ask next. You'll learn:
+
+- How to have productive conversations with AI tools
+- What good prompts look like (the personas *are* the prompts)
+- How AI can augment your thinking without replacing your judgment
+- When to trust AI output and when to push back
+
+This is a learning tool as much as a productivity tool. Start here, build confidence, then take what you've learned to other AI interactions.
+
 ---
 
 ### Features
