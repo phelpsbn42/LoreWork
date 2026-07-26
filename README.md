@@ -5,11 +5,12 @@
 <h1 align="center">LoreWork</h1>
 
 <p align="center">
-  <strong>A portable, AI-agnostic persona system for solution delivery</strong>
+  <strong>Capture organizational knowledge through structured, AI-guided solution delivery</strong>
 </p>
 
 <p align="center">
   <a href="#overview">Overview</a> •
+  <a href="#the-real-value">The Real Value</a> •
   <a href="#personas">Personas</a> •
   <a href="#quick-start">Quick Start</a> •
   <a href="#workflow">Workflow</a> •
@@ -20,9 +21,13 @@
 
 ## Overview
 
-LoreWork is a structured approach to software solution delivery using AI-powered personas. Each persona is a markdown file that can be used as a system prompt with any AI agent tool (Claude, ChatGPT, etc.).
+LoreWork uses AI-powered personas to guide you through software solution delivery—but **the real value isn't the workflow, it's the knowledge you capture along the way.**
 
-The system guides you through three phases:
+Every project generates consistent, structured artifacts: business context, technical specifications, architectural decisions, risk assessments. Over time, this becomes a queryable corpus of your organization's collective intelligence.
+
+### How It Works
+
+AI personas guide you through three phases, prompting questions you might not think to ask:
 
 | Phase | Persona | Output |
 |-------|---------|--------|
@@ -30,15 +35,40 @@ The system guides you through three phases:
 | **Design** | Solution Architect | Technical Specification |
 | **Delivery** | Paired Developer | Working Software |
 
-### Key Features
+Each persona produces both human-readable markdown and machine-readable JSON. The markdown is for you; the JSON is for knowledge graphs, search indexes, and future AI-assisted discovery.
 
-- **AI-Agnostic**: Personas are markdown files usable with any AI tool
+---
+
+## The Real Value
+
+### Consistent Documentation
+The personas guide thorough discovery, ensuring you capture decisions, risks, and rationale that often go undocumented. Every project follows the same structure—no more reinventing templates or forgetting key questions.
+
+### Prompted Thoroughness
+The personas ask what you might not think to ask. Why are we building this? What's explicitly out of scope? What are the risks? What architectural decisions did we make, and why? This discipline produces better software.
+
+### Organizational Knowledge Capture
+**This is where it gets powerful.** Every project produces structured JSON artifacts with consistent schemas:
+
+- Query across projects: *"What risks have we seen in e-commerce projects?"*
+- Feed into RAG systems: *"Have we solved a problem like this before?"*
+- Build knowledge graphs: Connect decisions, technologies, and outcomes
+- Pattern recognition: Common technology choices, recurring risks, estimation accuracy
+- Onboarding: New team members explore past projects in a consistent format
+
+The filesystem structure (`projects/<name>/input/` and `output/`) is one way to organize this locally. But the real opportunity is what you can do with this structured data at scale—knowledge graphs, organizational search, AI-assisted project discovery. More to come.
+
+---
+
+### Features
+
+- **AI-Agnostic**: Personas are markdown files usable with any AI tool (Claude, ChatGPT, Gemini, etc.)
+- **Structured Output**: Every artifact has both markdown (human) and JSON (machine) formats
+- **JSON Schemas**: Validate and query artifacts programmatically
 - **Artifact Chaining**: Each persona's output feeds the next persona's input
 - **Contradiction Detection**: Downstream personas flag upstream inconsistencies
 - **Mustache Templates**: Consistent, repeatable artifact generation
-- **JSON Schemas**: Structured data validation for all artifacts
 - **Test-Driven Development**: Paired Developer enforces TDD discipline
-- **Incremental Delivery**: Small changes, short-lived branches, PR approval
 
 ---
 
@@ -152,6 +182,15 @@ claude --system-prompt personas/paired-developer.md --cwd projects/my-project
 
 **Documentation:** [Claude CLI Docs](https://docs.anthropic.com/en/docs/claude-cli)
 
+**Tip: Watch the AI Reason**
+
+If you're learning the methodologies (Inception Decks, C4 diagrams, TDD), consider enabling visible reasoning to see *how* the AI thinks through each step:
+
+- **Toggle thinking**: `Option + T` (macOS) or `Alt + T` (Windows/Linux)
+- **Expand full reasoning**: `Ctrl + O`
+
+Watching the reasoning process helps you internalize the frameworks and learn to ask better questions yourself.
+
 ---
 
 ### Gemini CLI (Google)
@@ -218,6 +257,18 @@ gh copilot suggest --system-prompt personas/paired-developer.md
 
 ---
 
+### Loading Personas in CLI Tools
+
+Once inside a CLI tool session, you can load a persona dynamically:
+
+```
+Load System Prompt personas/analyst.md
+```
+
+This allows you to switch personas mid-session without restarting the CLI.
+
+---
+
 ### Alternative: Web Interfaces
 
 If you prefer web interfaces, copy the persona file contents and paste as your first message:
@@ -228,6 +279,8 @@ If you prefer web interfaces, copy the persona file contents and paste as your f
 | **ChatGPT** | "Use this as your system prompt: [paste persona]" |
 | **Gemini Web** | "Act according to these instructions: [paste persona]" |
 | **GitHub Copilot Chat** | Paste persona in VS Code Copilot Chat |
+
+**Note:** Web interfaces lack filesystem access, so the artifact chaining workflow (reading from `input/` and writing to `output/` directories) will not work. You'll need to manually copy artifact content between sessions. For the full automated workflow, use CLI tools instead.
 
 ---
 
@@ -469,7 +522,7 @@ Schemas validate the structured data output:
 
 ## License
 
-[Add your license here]
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
 
 ---
 

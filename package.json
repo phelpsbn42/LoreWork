@@ -12,7 +12,10 @@
     "render": "node scripts/render.js",
     "init": "node scripts/init-project.js",
     "validate": "node scripts/validate.js",
-    "test": "node scripts/test-render.js"
+    "test": "node scripts/test-render.js && node scripts/test-validate.js && node scripts/test-init.js",
+    "test:render": "node scripts/test-render.js",
+    "test:validate": "node scripts/test-validate.js",
+    "test:init": "node scripts/test-init.js"
   },
   "keywords": [
     "ai",

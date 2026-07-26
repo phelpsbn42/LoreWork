@@ -187,4 +187,10 @@ function showDataSummary(data, schemaType) {
   console.log('');
 }
 
-main();
+// Export for testing
+module.exports = { showDataSummary, schemaTypes };
+
+// Only run main when executed directly
+if (require.main === module) {
+  main();
+}
